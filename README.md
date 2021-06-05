@@ -1,5 +1,5 @@
 # esptracer_PC
-Wifiモジュール（ESP-12 nodeMCU）を使ってライントレーサの走行データを無線伝送する
+Wifi module（ESP-12 nodeMCU）を使ってライントレーサの走行データを無線伝送する
 
 構成
 esptracer_tracer
