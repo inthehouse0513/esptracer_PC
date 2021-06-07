@@ -25,7 +25,7 @@ void setup() {
   //ピンモード設定
   pinMode(LED_BUILTIN, OUTPUT);       //LED_BUILTIN pinを出力で設定
   digitalWrite(LED_BUILTIN,LOW);
-  delay(1500);
+  delay(3000);
 
   Serial.begin(115200);
   WiFi.mode(WIFI_AP);
