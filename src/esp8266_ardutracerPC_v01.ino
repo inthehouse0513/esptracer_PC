@@ -5,35 +5,38 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <ESP8266WebServer.h>
-#include <Ticker.h>
-#include <SoftwareSerial.h>
-
-#ifndef WIFI_SSID
-#define WIFI_SSID "esptracer"
-#define WIFI_PSW  "esptracer"
+#ifndef STASSID
+#define STASSID "esptracer"
+#define STAPSK  "esptracer"
+#define num 255
 #endif
 
-char wifibuff[200];       //受信するデータ
-IPAddress ip(192, 168, 1, 124);
-IPAddress subnet(255, 255, 255, 0);
+//IPAddress myIP(192,168,1,101);  // 自分のIPアドレス
+//IPAddress gateway(192,168,1,1);  // GW
+//IPAddress subnet(255,255,255,0);  // subnet
+char wifibuff[num];       //受信するデータ
 unsigned int localPort = 8100;      // local port to listen on
 WiFiUDP Udp;
 
 
-//git test 2
-
 void setup() {
-
-
   //ピンモード設定
   pinMode(LED_BUILTIN, OUTPUT);       //LED_BUILTIN pinを出力で設定
   digitalWrite(LED_BUILTIN,LOW);
-  delay(3000);
+  delay(100);
 
   Serial.begin(115200);
-  WiFi.mode(WIFI_AP);
-  WiFi.softAPConfig(ip, ip, subnet);
-  WiFi.softAP(WIFI_SSID, WIFI_PSW);
+//  WiFi.config(myIP,gateway,subnet);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(STASSID, STAPSK);
+
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.print("Connected at");
+  Serial.println(WiFi.localIP());
   Udp.begin(localPort);
 
   //ビルトインＬＥＤの初期化のための消灯
@@ -48,7 +51,16 @@ void loop() {
   //udpパケット監視　正ならばif内処理の実行
   if(packetSize >0 ){
     Udp.read(wifibuff, packetSize);   //データ受信
-    Serial.println(wifibuff);
     Udp.flush();
+    Serial.print(wifibuff);
+    Serial.print("...");
+    Serial.println(packetSize);
+
+    //転送後にバッファをクリア
+    for(int i=0 ; i<num ; i++){
+      wifibuff[i] = 0;
+    }
   }
+
+
 }
